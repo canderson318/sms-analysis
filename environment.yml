@@ -1,0 +1,48 @@
+name: generic-python
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.12
+
+  # Jupyter / reproducibility
+  - ipython
+  - ipykernel
+  - jupyterlab
+  - ipywidgets
+  - jupytext
+  - pandoc
+
+  # Scientific Python
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - statsmodels
+  - matplotlib
+  - seaborn
+  - tqdm
+
+  # Bioinformatics (generic)
+  - anndata
+  - scanpy
+  - biopython
+  - pysam
+
+  # Text analysis
+  - regex
+  - nltk
+
+  # I/O and performance
+  - pyarrow
+  - h5py
+
+  # Dev / workflow
+  - pyyaml
+  - black
+  - ruff
+  - pytest
+  - pip
+
+  # Optional utilities
+  - nodejs
