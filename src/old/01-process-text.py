@@ -8,7 +8,7 @@ import seaborn as sns
 import re
 
 # set wd
-os.chdir(pth("/Users/canderson/sms-analysis"))
+os.chdir(pth("/Users/canderson/dev/sms-analysis"))
 
 
 # \\

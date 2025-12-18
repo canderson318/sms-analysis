@@ -6,14 +6,12 @@ from pathlib import Path as pth
 import subprocess as sp
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import re
 import unicodedata
 from typing import List, Tuple, Any
 
 
-os.chdir(pth(pth.home() / 'sms-analysis'))
+os.chdir(pth(pth.home() / 'dev/sms-analysis'))
 
 # copy chat db so no funky stuff
 sp.run(["scp","/Users/canderson/Library/Messages/chat.db", "raw-data/copy-of-chat.db"])
@@ -110,3 +108,15 @@ print(X_messages.shape)
 X_messages.tail(10)
 
 X_messages.to_csv('processed-data/X-messages.csv',index = False)
+
+with open("processed-data/messages.txt", "w", encoding="utf-8") as f:
+    f.write("\n----------\n".join(
+        X_messages["date_time"].astype(str) + ":: " + X_messages["from_me"].astype(str) + ":: " + X_messages["text"].astype(str)
+        ))
+
+# clean empty lines
+with open("processed-data/messages.txt", encoding="utf-8") as f:
+    lines = [l for l in f if l.strip()]
+
+with open("processed-data/messages.txt", "w", encoding="utf-8") as f:
+    f.writelines(lines)
