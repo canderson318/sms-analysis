@@ -97,16 +97,16 @@ messages = messages[ messages.text.str.strip().ne("")]
 messages = messages[messages.text.notna()]
 
 # filter for katrina messages
-katrina_messages = messages[messages.sender.str.contains('30761',na = False)]
+X_messages = messages[messages.sender.str.contains('30761',na = False)]
 
 # make date class
-katrina_messages = katrina_messages.copy()
-katrina_messages['date_time'] = pd.to_datetime(katrina_messages["date_time"])
+X_messages = X_messages.copy()
+X_messages['date_time'] = pd.to_datetime(X_messages["date_time"])
 
-katrina_messages = katrina_messages.copy()
-katrina_messages=katrina_messages.sort_values("date_time").reset_index(drop=True)
+X_messages = X_messages.copy()
+X_messages=X_messages.sort_values("date_time").reset_index(drop=True)
 
-print(katrina_messages.shape)
-katrina_messages.tail(10)
+print(X_messages.shape)
+X_messages.tail(10)
 
-katrina_messages.to_csv('processed-data/katrina-messages.csv',index = False)
+X_messages.to_csv('processed-data/X-messages.csv',index = False)
