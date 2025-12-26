@@ -1,5 +1,16 @@
 #!/Users/canderson/miniconda3/envs/generic-python/bin/python
-#%%
+# ---
+# jupyter:
+#   jupytext:
+#     cell_metadata_filter: all,-execution,-papermill,-trusted
+#     notebook_metadata_filter: -jupytext.text_representation.jupytext_version
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+# ---
+
+# %%
 import sqlite3
 import os
 from pathlib import Path as pth
@@ -12,24 +23,24 @@ import re
 import unicodedata
 from typing import List, Tuple, Any
 
-#%% [markdown]
+# %% [markdown]
 # ## Change working directory
 
-#%%
+# %%
 os.chdir(pth(pth.home() / 'dev/sms-analysis'))
 
 
-#%% [markdown]
+# %% [markdown]
 # ## Load Data
 
-#%% 
+# %%
 messages = pd.read_csv('processed-data/X-messages.csv')
 messages.head()
 
-#%% [markdown]
+# %% [markdown]
 # ## flag where they respond to me and where i respond to them
 
-#%%
+# %%
 # flag their response 
 messages = (
     messages
@@ -43,10 +54,10 @@ messages = (
 
 messages.head()
 
-#%% [markdown]
+# %% [markdown]
 # ## Calculate response time
 
-#%%
+# %%
 messages['date_time'] = pd.to_datetime(messages.date_time)
 
 messages = (
@@ -55,10 +66,10 @@ messages = (
     .assign(time_diff_sec = lambda df: (df.time_diff.dt.total_seconds().round().astype('Int64') ))
 )
 
-#%% [markdown]
+# %% [markdown]
 # ## Analyze response times
 
-#%%
+# %%
 print("Their median response time =",  round(np.median(messages['time_diff_sec'][messages['their_response']])/60), "minutes")
 print("My median response time =",  round(np.median(messages['time_diff_sec'][messages['my_response']])/60), "minutes")
 
@@ -92,7 +103,7 @@ plt.ylabel("Density")
 plt.legend()
 plt.show()
 
-#%% [markdown]
+# %% [markdown]
 # Hump around 500 minutes probably because they text late and i don't respond till i wake up, around 8 hours later.
 
 

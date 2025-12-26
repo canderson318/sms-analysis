@@ -1,5 +1,16 @@
 #!/Users/canderson/miniconda3/envs/generic-python/bin/python
-#%%
+# ---
+# jupyter:
+#   jupytext:
+#     cell_metadata_filter: all,-execution,-papermill,-trusted
+#     notebook_metadata_filter: -jupytext.text_representation.jupytext_version
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+# ---
+
+# %%
 import sqlite3
 import os
 from pathlib import Path as pth
@@ -16,21 +27,21 @@ import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 import re
 
-#%% [markdown]
+# %% [markdown]
 # ## Change working directory
 
-#%%
+# %%
 os.chdir(pth(pth.home() / 'dev/sms-analysis'))
 
 
-#%% [markdown]
+# %% [markdown]
 # ## Load Data
 
-#%% 
+# %%
 messages = pd.read_csv('processed-data/X-messages.csv')
 messages.head()
 
-#%%
+# %%
 
 # tokenize messages by sender
 
@@ -70,7 +81,7 @@ their_tokens = (
     .reset_index(drop=True)
 )
 
-#%%
+# %%
 
 # %%
 my_tokens.value_counts().sort_values( ascending = False)
@@ -96,14 +107,14 @@ def print_word_count(pattern: str):
 # %%
 patterns = ['love', 'like', 'happy', 'sad', 'miss', 'wish',  
             'hat', 'dog', 'mad', 'time', 'plan', 'you', 'me', 
-            'how|why|where|when', 'sex']
+            'how|why|where|when']
 for patt in patterns:
     print_word_count(patt)
 
 # %% [markdown]
 # ## use LWIC dictionary
 
-#%% 
+# %%
 
 # Download dictionary
 if not pth.exists(pth("raw-data/LIWC2007.dic")):
@@ -265,13 +276,13 @@ if not pth.exists(pth("raw-data/LIWC2007.dic")):
 #   3. Download NLTK's 'punkt' model: import nltk; nltk.download('punkt') (in Python interpreter)
 
 
-# %% 
+# %%
 from convokit import Corpus, Utterance, Speaker, TextParser, Coordination,PolitenessStrategies
 import nltk; nltk.download('punkt')
 # spacy.load('en_core_web_sm')
 
 
-#%% [markdown]
+# %% [markdown]
 # #### Construct corpus
 
 # %%
@@ -280,7 +291,7 @@ messages.date_time = pd.to_datetime(messages.date_time)
 df = messages.copy()
 
 
-#%%
+# %%
 
 
 def speaker_id(row):
@@ -318,15 +329,15 @@ corpus = Corpus(
     utterances=utterances
 )
 
-#%% [markdown]
+# %% [markdown]
 # ### Tokenize
 
-#%%
+# %%
 
 parser = TextParser('en_core_web_sm')
 corpus = parser.transform(corpus)
 
-#%% [markdown]
+# %% [markdown]
 # ### Analyze Corpus
 
 # %%
@@ -338,9 +349,9 @@ corpus.print_summary_stats()
 print("Speakers in corpus:", list(corpus.iter_speakers()))  
 print(corpus.speaking_pairs(speaker_ids_only=True)  )
 
-#%% [markdown]
+# %% [markdown]
 # ### Speaker Coordination
-#%%
+# %%
 # speaker coordination
 coord = Coordination(target_thresh=3, speaker_thresh=5, utterances_thresh=5)  
 
@@ -352,28 +363,28 @@ me_coord_scores = corpus.get_speaker("me").meta["coord"]['them']
 them_coord_scores = corpus.get_speaker("them").meta["coord"]['me']
 feature_freqs = pd.concat([pd.Series(me_coord_scores).rename("me_to_them"), pd.Series(them_coord_scores).rename("them_to_me")], axis = 1)
 
-#%%
+# %%
 feature_freqs['diff'] = feature_freqs['me_to_them']-feature_freqs['them_to_me']
 
 feature_freqs.sort_values('diff', key = lambda x: abs(x), ascending = False)
 
-#%% [markdown]
+# %% [markdown]
 # |Feature|me_to_them|them_to_me|Interpretation|
 # |---|---|---|---|
 # |auxverb|0.31|0.05|You strongly accommodate their auxiliary verbs; they barely adapt to yours|
 # |pronoun|−0.02|0.21|You slightly diverge; they strongly accommodate|
 # |article|0.00|0.00|No coordination either way|
 
-#%% [markdown]
+# %% [markdown]
 # ### Politeness
 
-#%%
+# %%
 # Initialize politeness analyzer (requires parsed text)  
 ps = PolitenessStrategies(parse_attribute_name="en_core_web_sm")  
 corpus= ps.fit_transform(corpus)  
 
 
-#%%
+# %%
   
 # Get politeness scores for each speaker's utterances  
 me_utterances = list(corpus.iter_utterances(lambda x: x.speaker.id == "me"))  
@@ -400,9 +411,9 @@ out['diff'] = out.me_self_normalized-out.them_self_normalized
 
 out.sort_values('diff', key = lambda x: abs(x), ascending = False)
 
-# %%  [markdown]
+# %% [markdown]
 # Politeness features
-
+#
 # | Feature name              | What it measures | Typical interpretation in discourse analysis |
 # |---------------------------|------------------|----------------------------------------------|
 # | Please                    | Presence of the word “please” anywhere in the utterance | Politeness marker; mitigates imposition |
